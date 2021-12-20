@@ -1,0 +1,6 @@
+.DS_Store
+node_modules
+products/node_modules
+reviews/node_modules
+.env
+logs
