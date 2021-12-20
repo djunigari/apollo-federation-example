@@ -1,0 +1,5 @@
+extend type Query {
+  bestSellers(category: ProductCategory = ALL): [Product]
+  categories: [Department]
+  product(id: ID!): Product
+}

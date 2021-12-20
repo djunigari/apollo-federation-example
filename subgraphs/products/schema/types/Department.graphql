@@ -1,0 +1,4 @@
+type Department {
+  category: ProductCategory
+  url: String
+}

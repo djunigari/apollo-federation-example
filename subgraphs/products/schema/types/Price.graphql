@@ -1,0 +1,7 @@
+type Price {
+  cost: Money
+
+  """A number between 0 and 1 signifying the % discount"""
+  deal: Float
+  dealSavings: Money
+}
