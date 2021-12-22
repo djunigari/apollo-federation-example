@@ -22,6 +22,6 @@ const server = new ApolloServer({
   plugins: [ApolloServerPluginInlineTraceDisabled()],
 });
 
-server.listen(process.env.APP_PRODUCTS_PORT).then(({ url }) => {
+server.listen(process.env.APP_ACCOUNTS_PORT).then(({ url }) => {
   console.log(`🚀  Server ready at ${url}`);
 });

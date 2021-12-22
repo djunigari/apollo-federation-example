@@ -1,16 +1,37 @@
 {
   "name": "gateway",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "server": "concurrently -k npm:server:*",
+    "server:accounts": "nodemon subgraphs/accounts/index.js",
+    "server:products": "nodemon subgraphs/products/index.js",
+    "server:reviews": "nodemon subgraphs/reviews/index.js",
+    "server:gateway": "nodemon main.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@apollo/gateway": "^2.0.0-alpha.2",
+    "@apollo/subgraph": "^0.1.5",
+    "@graphql-tools/load-files": "^6.5.3",
+    "@graphql-tools/merge": "^8.2.1",
     "apollo-server": "^3.5.0",
-    "graphql": "^15.8.0"
+    "apollo-server-core": "^3.5.0",
+    "apollo-server-express": "^3.5.0",
+    "concurrently": "^6.5.1",
+    "datasource-sql": "^1.6.0",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.2",
+    "express-jwt": "^6.1.0",
+    "graphql": "^15.8.0",
+    "graphql-middleware": "^6.1.13",
+    "graphql-shield": "^7.5.0",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^0.95.15",
+    "mysql": "^2.18.1",
+    "nodemon": "^2.0.15",
+    "wait-on": "^6.0.0"
   }
 }
