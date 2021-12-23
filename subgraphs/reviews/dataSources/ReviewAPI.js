@@ -8,6 +8,9 @@ class ReviewAPI extends SQLDataSource {
     all(){
         return reviews
     }
+    findBYProductId(productId){
+        return reviews.filter(review => review.product.id = productId)
+    }
 }
 
 module.exports = ReviewAPI

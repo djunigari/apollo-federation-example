@@ -28,7 +28,14 @@ const isReadingOwnAccount = rule()((parent, { id }, { user }) => {
   
 const permissions = shield({
     Query: {
-    }
+    },
+  },
+  {
+    fallbackError: async (thrownThing, parent, args, context, info) => {
+        console.error('The resolver threw something that is not an error.')
+        console.error(thrownThing)
+        return new Error('Internal server error', 'ERR_INTERNAL_SERVER')
+    },
 });
 
 module.exports = { permissions };

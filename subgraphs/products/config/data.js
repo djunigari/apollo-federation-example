@@ -22,7 +22,6 @@ module.exports = {
         category: 'ELECTRONICS',
         images: null,
         primaryImage: null,
-        reviews:[{id:"1"}]
       }
     ]
   };
