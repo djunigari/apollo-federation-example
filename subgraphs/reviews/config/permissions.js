@@ -28,7 +28,6 @@ const isReadingOwnAccount = rule()((parent, { id }, { user }) => {
   
 const permissions = shield({
     Query: {
-    
     }
 });
 

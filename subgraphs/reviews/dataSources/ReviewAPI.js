@@ -1,7 +1,7 @@
 const { SQLDataSource } = require('datasource-sql');
 const { reviews } = require('../config/data')
 
-class AccountAPI extends SQLDataSource {
+class ReviewAPI extends SQLDataSource {
     findById(id){
         return reviews.find(review => review.id === id);
     }
@@ -10,4 +10,4 @@ class AccountAPI extends SQLDataSource {
     }
 }
 
-module.exports = AccountAPI
+module.exports = ReviewAPI

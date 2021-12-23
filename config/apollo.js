@@ -6,6 +6,9 @@ const { ApolloServerPluginDrainHttpServer } = require('apollo-server-core')
 const express = require("express")
 const http = require('http')
 const expressJwt = require("express-jwt");
+const { readFileSync } = require('fs');
+
+const supergraphSdl = readFileSync('./supergraph.graphql').toString();
 
 async function startApolloServer() {
     const app = express();
@@ -20,8 +23,7 @@ async function startApolloServer() {
     const httpServer = http.createServer(app);
 
     const gateway = new ApolloGateway({
-        serviceList: [{ name: "accounts", url: "http://localhost:4001" },
-        { name: "products", url: "http://localhost:4002" },],
+      supergraphSdl,
         buildService({ name, url }) {
             return new RemoteGraphQLDataSource({
               url,

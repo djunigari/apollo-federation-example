@@ -21,7 +21,8 @@ module.exports = {
         salesRankInCategory: 1,
         category: 'ELECTRONICS',
         images: null,
-        primaryImage: null
+        primaryImage: null,
+        reviews:[{id:"1"}]
       }
     ]
   };

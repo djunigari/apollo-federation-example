@@ -1,63 +1,48 @@
-
 schema
-  @core(feature: "https://specs.apollo.dev/core/v0.2")
-  @core(feature: "https://specs.apollo.dev/join/v0.2", for: EXECUTION)
+  @core(feature: "https://specs.apollo.dev/core/v0.2"),
+  @core(feature: "https://specs.apollo.dev/join/v0.1", for: EXECUTION)
 {
   query: Query
+  mutation: Mutation
 }
 
-directive @core(feature: String!, as: String, for: core__Purpose) repeatable on SCHEMA
+directive @core(as: String, feature: String!, for: core__Purpose) repeatable on SCHEMA
 
-directive @join__field(graph: join__Graph!, requires: join__FieldSet, provides: join__FieldSet, type: String, external: Boolean) repeatable on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+directive @join__field(graph: join__Graph, provides: join__FieldSet, requires: join__FieldSet) on FIELD_DEFINITION
 
 directive @join__graph(name: String!, url: String!) on ENUM_VALUE
 
-directive @join__implements(graph: join__Graph!, interface: String!) repeatable on OBJECT | INTERFACE
+directive @join__owner(graph: join__Graph!) on INTERFACE | OBJECT
 
-directive @join__type(graph: join__Graph!, key: join__FieldSet, extension: Boolean! = false) repeatable on OBJECT | INTERFACE | UNION | ENUM | INPUT_OBJECT | SCALAR
+directive @join__type(graph: join__Graph!, key: join__FieldSet) repeatable on INTERFACE | OBJECT
 
-enum core__Purpose {
-  """
-  `SECURITY` features provide metadata necessary to securely resolve fields.
-  """
-  SECURITY
-
-  """
-  `EXECUTION` features provide metadata necessary for operation execution.
-  """
-  EXECUTION
+type Account
+  @join__owner(graph: ACCOUNTS)
+  @join__type(graph: ACCOUNTS, key: "id")
+{
+  id: ID! @join__field(graph: ACCOUNTS)
+  name: String @join__field(graph: ACCOUNTS)
 }
 
-enum CURRENCY_CODE
-  @join__type(graph: PRODUCTS)
-{
+enum CURRENCY_CODE {
   USD
 }
 
-type Department
-  @join__type(graph: PRODUCTS)
-{
+type Department {
   category: ProductCategory
   url: String
 }
 
-scalar join__FieldSet
-
-enum join__Graph {
-  PRODUCTS @join__graph(name: "products", url: "http://localhost:4001/")
-  REVIEWS @join__graph(name: "reviews", url: "http://localhost:4002/")
-}
-
-type Money
-  @join__type(graph: PRODUCTS)
-{
+type Money {
   amount: Float
   currencyCode: CURRENCY_CODE
 }
 
-type Price
-  @join__type(graph: PRODUCTS)
-{
+type Mutation {
+  login(email: String!, password: String!): String @join__field(graph: ACCOUNTS)
+}
+
+type Price {
   cost: Money
 
   """A number between 0 and 1 signifying the % discount"""
@@ -70,56 +55,74 @@ This is an Entity, docs:https://www.apollographql.com/docs/federation/entities/
 You will need to define a __resolveReference resolver for the type you define, docs: https://www.apollographql.com/docs/federation/entities/#resolving
 """
 type Product
+  @join__owner(graph: PRODUCTS)
   @join__type(graph: PRODUCTS, key: "id")
-  @join__type(graph: REVIEWS, key: "id", extension: true)
+  @join__type(graph: REVIEWS, key: "id")
 {
-  id: ID!
+  category: ProductCategory @join__field(graph: PRODUCTS)
+  description: String @join__field(graph: PRODUCTS)
+  id: ID! @join__field(graph: PRODUCTS)
+  images(size: Int = 1000): [String] @join__field(graph: PRODUCTS)
+  price: Price @join__field(graph: PRODUCTS)
+  primaryImage(size: Int = 1000): String @join__field(graph: PRODUCTS)
+  reviewSummary: ReviewSummary @join__field(graph: REVIEWS)
+  reviews: [Review] @join__field(graph: REVIEWS)
+  salesRank(category: ProductCategory = ALL): Int @join__field(graph: PRODUCTS)
+  salesRankInCategory: Int @join__field(graph: PRODUCTS)
+  salesRankOverall: Int @join__field(graph: PRODUCTS)
   title: String @join__field(graph: PRODUCTS)
   url: String @join__field(graph: PRODUCTS)
-  description: String @join__field(graph: PRODUCTS)
-  price: Price @join__field(graph: PRODUCTS)
-  salesRank(category: ProductCategory = ALL): Int @join__field(graph: PRODUCTS)
-  salesRankOverall: Int @join__field(graph: PRODUCTS)
-  salesRankInCategory: Int @join__field(graph: PRODUCTS)
-  category: ProductCategory @join__field(graph: PRODUCTS)
-  images(size: Int = 1000): [String] @join__field(graph: PRODUCTS)
-  primaryImage(size: Int = 1000): String @join__field(graph: PRODUCTS)
-  reviews: [Review] @join__field(graph: REVIEWS)
-  reviewSummary: ReviewSummary @join__field(graph: REVIEWS)
 }
 
-enum ProductCategory
-  @join__type(graph: PRODUCTS)
-{
+enum ProductCategory {
   ALL
-  GIFT_CARDS
-  ELECTRONICS
-  CAMERA_N_PHOTO
-  VIDEO_GAMES
   BOOKS
+  CAMERA_N_PHOTO
   CLOTHING
+  ELECTRONICS
+  GIFT_CARDS
+  VIDEO_GAMES
 }
 
-type Query
-  @join__type(graph: PRODUCTS)
-  @join__type(graph: REVIEWS)
-{
+type Query {
+  account(id: ID!): Account @join__field(graph: ACCOUNTS)
+  accounts: [Account] @join__field(graph: ACCOUNTS)
   bestSellers(category: ProductCategory = ALL): [Product] @join__field(graph: PRODUCTS)
   categories: [Department] @join__field(graph: PRODUCTS)
   product(id: ID!): Product @join__field(graph: PRODUCTS)
+  viewer: Account! @join__field(graph: ACCOUNTS)
 }
 
 type Review
+  @join__owner(graph: REVIEWS)
   @join__type(graph: REVIEWS, key: "id")
 {
-  id: ID!
-  rating: Float
-  content: String
+  content: String @join__field(graph: REVIEWS)
+  id: ID! @join__field(graph: REVIEWS)
+  rating: Float @join__field(graph: REVIEWS)
 }
 
-type ReviewSummary
-  @join__type(graph: REVIEWS)
-{
-  totalReviews: Int
+type ReviewSummary {
   averageRating: Float
+  totalReviews: Int
+}
+
+enum core__Purpose {
+  """
+  `EXECUTION` features provide metadata necessary to for operation execution.
+  """
+  EXECUTION
+
+  """
+  `SECURITY` features provide metadata necessary to securely resolve fields.
+  """
+  SECURITY
+}
+
+scalar join__FieldSet
+
+enum join__Graph {
+  ACCOUNTS @join__graph(name: "accounts" url: "http://localhost:4001/")
+  PRODUCTS @join__graph(name: "products" url: "http://localhost:4002/")
+  REVIEWS @join__graph(name: "reviews" url: "http://localhost:4003/")
 }
