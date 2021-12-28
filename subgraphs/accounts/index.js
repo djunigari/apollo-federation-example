@@ -3,7 +3,7 @@ const { applyMiddleware } = require("graphql-middleware");
 const { buildSubgraphSchema } = require('@apollo/subgraph');
 const { ApolloServerPluginInlineTraceDisabled } = require('apollo-server-core')
 
-const { permissions } = require("./config/permissions");
+const { permissions } = require("./config/shield/permissions");
 
 const dataSources = require('./dataSources')
 const context = require('./config/context')
