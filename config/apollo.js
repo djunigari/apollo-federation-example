@@ -7,6 +7,7 @@ const express = require("express")
 const http = require('http')
 const expressJwt = require("express-jwt");
 const { readFileSync } = require('fs');
+const { Console } = require('console')
 
 const supergraphSdl = readFileSync('./supergraph.graphql').toString();
 
@@ -42,7 +43,7 @@ async function startApolloServer() {
         plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
         subscriptions: false,
         context: ({ req }) => {
-            const user = req.user || null;
+            const user = req.user || null; 
             return { user };
           }
     });

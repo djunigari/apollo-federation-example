@@ -1,12 +1,22 @@
 require('dotenv').config()
 
 const jwt = require("jsonwebtoken");
-const { accounts } = require("../config/data");
+
 module.exports = {
     Account: {
-        _resolveReference(object, args, { dataSources } ) {
-          return dataSources.accountAPI.findById(object.id);     
-        }   
+        _resolveReference(account, args, { dataSources } ) {
+          return dataSources.accountAPI.findById(account.id);     
+        },
+        userDetail(account, args, { dataSources } ) {
+          return dataSources.userAPI.findById(account.userDetail.id)
+        },
+        roles(account, args, { dataSources } ) {
+          const roles = []
+          account.roles && account.roles.forEach(role => {
+            roles.push(dataSources.roleAPI.findById(role.id))
+          })
+          return roles
+        },
       },   
     Query: {
         account(parent, { id }, { dataSources } ) {
@@ -21,9 +31,9 @@ module.exports = {
     },
     Mutation: {
         login(parent, { email, password }, { dataSources } ) {
-          const { id, permissions, roles } = dataSources.accountAPI.login(email, password)
+          const { id, roles } = dataSources.accountAPI.login(email, password)
           return jwt.sign(
-            { "https://awesomeapi.com/graphql": { roles, permissions } },
+            { "https://awesomeapi.com/graphql": { roles } },
             process.env.APP_AUTH_SECRET,
             { algorithm: "HS256", subject: id, expiresIn: "1d" }
           );

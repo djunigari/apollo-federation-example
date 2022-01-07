@@ -1,0 +1,42 @@
+extend type Query {
+    account(id: ID!): Account
+    accounts: [Account]
+    viewer: Account!
+}
+
+extend type Mutation {
+    login(email: String!, password: String!): String
+    newAccount(data: NewAccountInput): Account
+}
+
+type Account @key(fields: "id") {
+    id: ID!
+    email: String!
+    password: String!
+    userDetail: UserDetail
+    roles: [Role]
+}
+
+type UserDetail @key(fields: "id"){
+    id: ID!
+    firstName: String!
+    middleName: String
+    lastName: String!
+    daybirthday: Int
+    monthbirthday: Int
+    yearbirthday: Int
+}
+
+type Role @key(fields: "id"){
+    id: ID!
+    name: String!
+    description: String!
+    permissions: [String]
+}
+
+input NewAccountInput{
+    email: String!
+    password: String!
+    confirmPassword: String!
+}
+

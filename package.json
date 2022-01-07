@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "test": "jest",
     "server": "concurrently -k npm:server:*",
     "server:accounts": "nodemon subgraphs/accounts/index.js",
     "server:products": "nodemon subgraphs/products/index.js",
@@ -21,6 +22,7 @@
     "apollo-server": "^3.5.0",
     "apollo-server-core": "^3.5.0",
     "apollo-server-express": "^3.5.0",
+    "apollo-server-integration-testing": "^3.0.0",
     "concurrently": "^6.5.1",
     "datasource-sql": "^1.6.0",
     "dotenv": "^10.0.0",
@@ -35,5 +37,8 @@
     "nodemon": "^2.0.15",
     "wait-on": "^6.0.0",
     "yup": "^0.32.11"
+  },
+  "devDependencies": {
+    "jest": "^27.4.6"
   }
 }

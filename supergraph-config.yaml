@@ -1,9 +1,9 @@
 #rover supergraph compose --config ./supergraph-config.yaml > supergraph.graphql
 subgraphs:
   accounts:
-    routing_url: http://localhost:4001/
+    routing_url: http://localhost:4001/accounts
     schema:
-      subgraph_url: http://localhost:4001/
+      subgraph_url: http://localhost:4001/accounts
   products:
     routing_url: http://localhost:4002/
     schema:

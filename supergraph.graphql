@@ -20,8 +20,11 @@ type Account
   @join__owner(graph: ACCOUNTS)
   @join__type(graph: ACCOUNTS, key: "id")
 {
+  email: String! @join__field(graph: ACCOUNTS)
   id: ID! @join__field(graph: ACCOUNTS)
-  name: String @join__field(graph: ACCOUNTS)
+  password: String! @join__field(graph: ACCOUNTS)
+  roles: [Role] @join__field(graph: ACCOUNTS)
+  userDetail: UserDetail @join__field(graph: ACCOUNTS)
 }
 
 enum CURRENCY_CODE {
@@ -40,6 +43,13 @@ type Money {
 
 type Mutation {
   login(email: String!, password: String!): String @join__field(graph: ACCOUNTS)
+  newAccount(data: NewAccountInput): Account @join__field(graph: ACCOUNTS)
+}
+
+input NewAccountInput {
+  confirmPassword: String!
+  email: String!
+  password: String!
 }
 
 type Price {
@@ -107,6 +117,29 @@ type ReviewSummary {
   totalReviews: Int
 }
 
+type Role
+  @join__owner(graph: ACCOUNTS)
+  @join__type(graph: ACCOUNTS, key: "id")
+{
+  description: String! @join__field(graph: ACCOUNTS)
+  id: ID! @join__field(graph: ACCOUNTS)
+  name: String! @join__field(graph: ACCOUNTS)
+  permissions: [String] @join__field(graph: ACCOUNTS)
+}
+
+type UserDetail
+  @join__owner(graph: ACCOUNTS)
+  @join__type(graph: ACCOUNTS, key: "id")
+{
+  daybirthday: Int @join__field(graph: ACCOUNTS)
+  firstName: String! @join__field(graph: ACCOUNTS)
+  id: ID! @join__field(graph: ACCOUNTS)
+  lastName: String! @join__field(graph: ACCOUNTS)
+  middleName: String @join__field(graph: ACCOUNTS)
+  monthbirthday: Int @join__field(graph: ACCOUNTS)
+  yearbirthday: Int @join__field(graph: ACCOUNTS)
+}
+
 enum core__Purpose {
   """
   `EXECUTION` features provide metadata necessary to for operation execution.
@@ -122,7 +155,7 @@ enum core__Purpose {
 scalar join__FieldSet
 
 enum join__Graph {
-  ACCOUNTS @join__graph(name: "accounts" url: "http://localhost:4001/")
+  ACCOUNTS @join__graph(name: "accounts" url: "http://localhost:4001/accounts")
   PRODUCTS @join__graph(name: "products" url: "http://localhost:4002/")
   REVIEWS @join__graph(name: "reviews" url: "http://localhost:4003/")
 }

@@ -1,9 +1,9 @@
 const { rule } = require("graphql-shield");
 
 class ShieldRules {
-    getPermissions(user) {
+    getRoles(user) {
         if (user && user["https://awesomeapi.com/graphql"]) {
-          return user["https://awesomeapi.com/graphql"].permissions;
+          return user["https://awesomeapi.com/graphql"].roles;
         }
         return [];
     }
@@ -13,13 +13,13 @@ class ShieldRules {
       });
       
     canReadAnyAccount = rule()((parent, args, { user }) => {
-        const userPermissions = this.getPermissions(user);
-        return userPermissions.includes("read:any_account");
+        const roles = this.getRoles(user).map(r => r.name);
+        return roles.includes('admin')
     });
         
     canReadOwnAccount = rule()((parent, args, { user }) => {
-        const userPermissions = this.getPermissions(user);
-        return userPermissions.includes("read:own_account");
+        const roles = this.getRoles(user).map(r => r.name);
+        return roles.includes('subscriber')
     });
         
     isReadingOwnAccount = rule()((parent, { id }, { user }) => {

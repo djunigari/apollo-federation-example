@@ -1,5 +1,0 @@
-  extend type Query {
-    account(id: ID!): Account
-    accounts: [Account]
-    viewer: Account!
-  }
